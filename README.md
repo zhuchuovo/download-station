@@ -24,7 +24,7 @@ Node.js（ESM）+ Express + PostgreSQL（pg）+ JWT + bcrypt；前端为原生 H
 ### 一行命令启动
 
 ```bash
-sudo apt update && sudo apt install -y git nodejs npm postgresql && git clone <你的仓库地址> && cd download-station && sudo node server/panel.js
+sudo apt update && sudo apt install -y git nodejs npm postgresql && git clone https://github.com/zhuchuovo/download-station/edit/ && cd download-station && sudo node server/panel.js
 ```
 
 看到 `开服面板已启动` 后，浏览器打开：
