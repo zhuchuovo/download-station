@@ -1,0 +1,20 @@
+{
+  "name": "download-station",
+  "version": "1.0.0",
+  "description": "资源下载站：投递资源到指定文件夹，点击下载并统计下载次数",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "panel": "node server/panel.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1",
+    "pg": "^8.13.1"
+  }
+}

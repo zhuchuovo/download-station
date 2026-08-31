@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>下载站 · 开服面板</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f4f6fb; --card: #fff; --border: #e5e9f2; --text: #1e2433; --muted: #7a8499;
+  --primary: #4f6ef7; --primary-hover: #3d5bf5; --danger: #e5484d; --success: #30a46c; --warn: #e8890c;
+}
+body { font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+header h1 { font-size: 22px; }
+.header-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.app-link { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; background: #fff; }
+.app-link:hover { border-color: var(--primary); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--border); color: var(--muted); }
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #c3c9d6; }
+.pill.ok .dot { background: var(--success); } .pill.ok { color: var(--success); border-color: #bfe6d3; }
+.pill.bad .dot { background: var(--danger); } .pill.bad { color: var(--danger); border-color: #f5c6c8; }
+.pill.warn .dot { background: var(--warn); } .pill.warn { color: var(--warn); border-color: #f3dcb3; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+.card h2 { font-size: 15px; margin-bottom: 12px; }
+
+.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.hero p { color: var(--muted); font-size: 13px; margin-top: 6px; line-height: 1.7; }
+.btn { border: none; border-radius: 8px; padding: 9px 16px; font-size: 14px; cursor: pointer; transition: all .15s; background: #fff; border: 1px solid var(--border); color: var(--text); }
+.btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn.primary:hover { background: var(--primary-hover); color: #fff; }
+.btn.danger:hover { border-color: var(--danger); color: var(--danger); background: #fdecec; }
+.btn.big { padding: 14px 30px; font-size: 16px; font-weight: 700; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+
+details.card summary { cursor: pointer; font-size: 15px; font-weight: 600; }
+details.card summary::-webkit-details-marker { display: none; }
+details.card summary::before { content: "▸ "; color: var(--muted); }
+details[open].card summary::before { content: "▾ "; }
+details .inner { margin-top: 14px; }
+.form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.form label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; outline: none; }
+.form input:focus { border-color: var(--primary); }
+.form .actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.hint { color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+.steps { display: flex; flex-direction: column; gap: 8px; }
+.step { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; padding: 10px 12px; border-radius: 8px; background: #f8f9fd; }
+.step .icon { font-weight: 700; }
+.step.ok .icon { color: var(--success); } .step.bad .icon { color: var(--danger); }
+.step .detail { color: var(--muted); margin-top: 2px; white-space: pre-wrap; word-break: break-all; }
+
+.logs-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+#logs { background: #14181f; color: #c9d4e8; font-family: Consolas, "Courier New", monospace; font-size: 12px; line-height: 1.6; border-radius: 8px; padding: 12px; max-height: 320px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+.logs-tools { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: #fff; padding: 11px 22px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all .3s; pointer-events: none; z-index: 300; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--danger); }
+
+.gate { position: fixed; inset: 0; background: rgba(20,24,38,.6); display: flex; align-items: center; justify-content: center; z-index: 200; }
+.gate.hidden { display: none; }
+.gate-box { background: #fff; border-radius: 14px; padding: 26px; width: 320px; text-align: center; }
+.gate-box h3 { margin-bottom: 14px; }
+.gate-box input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 14px; margin-bottom: 12px; outline: none; }
+.gate-box input:focus { border-color: var(--primary); }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>🛠️ 下载站 · 开服面板</h1>
+      <p class="header-sub" id="sub">加载中…</p>
+    </div>
+    <a class="app-link hidden" id="app-link" target="_blank">打开站点 →</a>
+  </header>
+
+  <section class="pills" id="pills"></section>
+
+  <section class="card hero">
+    <div>
+      <h2>一键开服</h2>
+      <p>自动完成：<b>安装依赖</b> → <b>创建数据库</b>（download_station / 用户 ds_app）→ <b>生成 .env 配置</b> → <b>启动服务</b><br>
+      Linux 下用 sudo 运行面板可免密码自动建库，否则请先在下方填写 postgres 密码</p>
+    </div>
+    <button class="btn primary big" id="btn-one">🚀 一键开服</button>
+  </section>
+
+  <section class="card">
+    <h2>服务控制</h2>
+    <div class="btnrow">
+      <button class="btn" data-act="install">安装依赖</button>
+      <button class="btn" data-act="setup">配置数据库</button>
+      <button class="btn" data-act="start">启动</button>
+      <button class="btn" data-act="restart">重启</button>
+      <button class="btn danger" data-act="stop">停止</button>
+    </div>
+  </section>
+
+  <details class="card" id="db-card">
+    <summary>数据库连接配置（高级）</summary>
+    <div class="inner">
+      <div class="form">
+        <div><label>主机</label><input id="db-host" value="127.0.0.1"></div>
+        <div><label>端口</label><input id="db-port" value="5432"></div>
+        <div><label>超级用户名</label><input id="db-user" value="postgres"></div>
+        <div><label>postgres 密码</label><input id="db-pass" type="password" placeholder="sudo 运行时可不填"></div>
+        <div class="actions">
+          <button class="btn primary" id="btn-setup-form">使用以上配置并初始化</button>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:10px">
+        初始化会自动创建数据库 <code>download_station</code> 和应用账号 <code>ds_app</code>（随机密码），并写入项目根目录的 <code>.env</code>。
+        已存在的数据库不会被动数据，仅补授权限。
+      </p>
+    </div>
+  </details>
+
+  <section class="card hidden" id="steps-card">
+    <h2>执行结果</h2>
+    <div class="steps" id="steps"></div>
+  </section>
+
+  <section class="card">
+    <div class="logs-head">
+      <h2>运行日志</h2>
+      <div class="logs-tools">
+        <label><input type="checkbox" id="auto-log" checked> 自动刷新</label>
+        <button class="btn" id="btn-log-refresh">刷新</button>
+      </div>
+    </div>
+    <pre id="logs">暂无日志</pre>
+  </section>
+</div>
+
+<div class="gate hidden" id="gate">
+  <div class="gate-box">
+    <h3>🔒 面板已加密</h3>
+    <input type="password" id="gate-input" placeholder="请输入面板密码">
+    <button class="btn primary" style="width:100%" id="gate-btn">进入面板</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let toastTimer = null;
+
+function toast(msg, isError = false) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.toggle('error', isError);
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function getKey() { return localStorage.getItem('ds_panel_key') || ''; }
+
+async function api(path, { method = 'GET', body } = {}) {
+  const res = await fetch(path, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'X-Panel-Key': getKey() },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (res.status === 401) { showGate(); throw new Error('需要面板密码'); }
+  return res.json();
+}
+
+function showGate() { $('#gate').classList.remove('hidden'); $('#gate-input').focus(); }
+$('#gate-btn').onclick = () => {
+  localStorage.setItem('ds_panel_key', $('#gate-input').value);
+  $('#gate').classList.add('hidden');
+  refreshStatus();
+};
+$('#gate-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#gate-btn').click(); });
+
+/* ---------- 状态 ---------- */
+
+let lastStatus = null;
+
+function pill(label, state, title = '') {
+  const cls = state === true ? 'ok' : state === false ? 'bad' : 'warn';
+  const icon = state === true ? '' : state === false ? '' : '?';
+  return `<span class="pill ${cls}" title="${title}"><span class="dot"></span>${label}${icon}</span>`;
+}
+
+function renderStatus(s) {
+  lastStatus = s;
+  const pills = [
+    pill(`系统 ${s.platform}`, true),
+    pill(`Node ${s.node}`, true),
+    pill(s.npm ? `npm ${s.npm}` : 'npm 未检测到', !!s.npm),
+    pill(s.depsInstalled ? '依赖已安装' : '依赖未安装', s.depsInstalled),
+    pill(s.dbOk === true ? '数据库正常' : s.dbOk === false ? '数据库未连接' : '数据库未知', s.dbOk),
+    pill(s.app.running ? (s.app.responds ? `应用运行中 :${s.app.port}` : `应用已启动但未响应 :${s.app.port}`) : '应用未运行', s.app.running && s.app.responds),
+    ...(s.sudoAvailable ? [pill('sudo 可用（免密建库）', true)] : []),
+  ];
+  $('#pills').innerHTML = pills.join('');
+
+  const parts = [];
+  if (s.isRoot) parts.push('root 模式');
+  if (s.authEnabled) parts.push('密码保护已开启');
+  $('#sub').textContent = parts.length ? parts.join(' · ') : '一键安装、建库、启动下载站';
+
+  const link = $('#app-link');
+  if (s.app.running && s.app.responds) {
+    link.href = `http://${location.hostname}:${s.app.port}`;
+    link.classList.remove('hidden');
+  } else {
+    link.classList.add('hidden');
+  }
+}
+
+async function refreshStatus() {
+  try { renderStatus(await api('/api/status')); } catch { /* ignore */ }
+}
+
+/* ---------- 操作 ---------- */
+
+function busy(btn, on, text) {
+  if (on) { btn.dataset.old = btn.textContent; btn.textContent = text || '执行中…'; btn.disabled = true; }
+  else { btn.textContent = btn.dataset.old || btn.textContent; btn.disabled = false; }
+}
+
+function renderSteps(steps) {
+  $('#steps-card').classList.remove('hidden');
+  $('#steps').innerHTML = steps.map((st) => `
+    <div class="step ${st.ok ? 'ok' : 'bad'}">
+      <span class="icon">${st.ok ? '✓' : '✗'}</span>
+      <div><b>${st.name}</b><div class="detail">${st.detail || ''}</div></div>
+    </div>
+  `).join('');
+}
+
+$('#btn-one').onclick = async () => {
+  const btn = $('#btn-one');
+  busy(btn, true, '开服中…');
+  try {
+    const r = await api('/api/oneclick', { method: 'POST', body: dbForm() });
+    renderSteps(r.steps || []);
+    if (r.ok) toast('开服完成！站点已就绪');
+    else toast('开服未完成，请查看执行结果', true);
+  } catch (e) { toast(e.message, true); }
+  busy(btn, false);
+  refreshStatus();
+};
+
+function dbForm() {
+  return {
+    pgHost: $('#db-host').value.trim() || '127.0.0.1',
+    pgPort: $('#db-port').value.trim() || '5432',
+    pgUser: $('#db-user').value.trim() || 'postgres',
+    pgPassword: $('#db-pass').value,
+  };
+}
+
+document.querySelectorAll('[data-act]').forEach((btn) => {
+  btn.onclick = async () => {
+    const act = btn.dataset.act;
+    if (act === 'stop' || act === 'restart') {
+      if (!confirm(`确定要${act === 'stop' ? '停止' : '重启'}下载站服务吗？`)) return;
+    }
+    if (act === 'setup') { $('#db-card').open = true; $('#db-pass').focus(); return; }
+    busy(btn, true);
+    try {
+      if (act === 'install') {
+        const r = await api('/api/install', { method: 'POST' });
+        renderSteps([{ name: '安装依赖', ok: r.ok, detail: r.output }]);
+        toast(r.ok ? '依赖安装完成' : '安装失败，请查看结果', r.ok);
+      } else if (act === 'start') {
+        const r = await api('/api/start', { method: 'POST' });
+        if (r.ok) toast(`已启动 (PID ${r.pid})`);
+        else toast(r.error, true);
+      } else if (act === 'restart') {
+        const r = await api('/api/restart', { method: 'POST' });
+        if (r.ok) toast(`已重启 (PID ${r.pid})`);
+        else toast(r.error, true);
+      } else if (act === 'stop') {
+        const r = await api('/api/stop', { method: 'POST' });
+        if (r.ok) toast(r.message || '已停止');
+        else toast(r.error, true);
+      }
+    } catch (e) { toast(e.message, true); }
+    busy(btn, false);
+    refreshStatus();
+  };
+});
+
+$('#btn-setup-form').onclick = async () => {
+  const btn = $('#btn-setup-form');
+  if (!confirm('将创建/重置数据库账号并更新 .env，继续？')) return;
+  busy(btn, true, '初始化中…');
+  try {
+    const r = await api('/api/setup-db', { method: 'POST', body: dbForm() });
+    if (r.ok) {
+      renderSteps([{ name: '配置数据库', ok: true, detail: `数据库就绪 (ds_app @ ${r.host}:${r.port})，已写入 .env` }]);
+      toast('数据库配置完成');
+    } else {
+      renderSteps([{ name: '配置数据库', ok: false, detail: r.error }]);
+      toast(r.error, true);
+    }
+  } catch (e) { toast(e.message, true); }
+  busy(btn, false);
+  refreshStatus();
+};
+
+/* ---------- 日志 ---------- */
+
+async function refreshLogs() {
+  try {
+    const r = await api('/api/logs');
+    const el = $('#logs');
+    el.textContent = r.lines && r.lines.length ? r.lines.join('\n') : '暂无日志';
+    if ($('#auto-log').checked) el.scrollTop = el.scrollHeight;
+  } catch { /* ignore */ }
+}
+$('#btn-log-refresh').onclick = refreshLogs;
+
+refreshStatus();
+refreshLogs();
+setInterval(refreshStatus, 4000);
+setInterval(() => { if ($('#auto-log').checked) refreshLogs(); }, 2500);
+</script>
+</body>
+</html>

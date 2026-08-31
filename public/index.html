@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>下载站</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="topbar">
+    <div class="nav-left">
+      <input type="search" id="search" placeholder="搜索资源…">
+    </div>
+    <div class="nav-right" id="nav-user"></div>
+  </nav>
+
+  <main class="container">
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-count">0</div>
+        <div class="stat-label">资源总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-downloads">0</div>
+        <div class="stat-label">总下载次数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-size">0 B</div>
+        <div class="stat-label">资源总大小</div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="filters" id="filters"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- 登录 / 注册 -->
+  <div class="modal-backdrop hidden" id="modal-auth">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <div class="tabs">
+          <button class="tab active" id="tab-login">登录</button>
+          <button class="tab" id="tab-register">注册</button>
+        </div>
+        <button class="close" data-close>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="field"><label>用户名</label><input id="f-username" autocomplete="username"></div>
+        <div class="field"><label>密码</label><input id="f-password" type="password" autocomplete="current-password"></div>
+        <div class="form-error" id="auth-error"></div>
+        <button class="btn btn-primary btn-block" id="btn-auth-submit">登录</button>
+        <p class="form-hint">第一位注册的用户将自动成为管理员</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 上传资源 -->
+  <div class="modal-backdrop hidden" id="modal-upload">
+    <div class="modal">
+      <div class="modal-head"><h3>上传资源</h3><button class="close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <div class="dropzone" id="up-drop">
+          <p id="up-drop-text">点击选择文件或拖拽到此处</p>
+          <input type="file" id="up-file" hidden>
+        </div>
+        <div class="field">
+          <label>资源名称 *</label>
+          <input id="up-title" placeholder="给资源起个名字">
+        </div>
+        <div class="field">
+          <label>简介</label>
+          <textarea id="up-desc" rows="4" placeholder="介绍一下这个资源（鼠标悬停在卡片上时会显示）"></textarea>
+        </div>
+        <div class="form-error" id="upload-error"></div>
+        <button class="btn btn-primary btn-block" id="btn-upload-submit">提交</button>
+        <p class="form-hint" id="upload-hint"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资源详情 -->
+  <div class="modal-backdrop hidden" id="modal-detail">
+    <div class="modal modal-lg">
+      <div class="modal-head"><h3>资源详情</h3><button class="close" data-close>&times;</button></div>
+      <div class="modal-body" id="detail-body"></div>
+    </div>
+  </div>
+
+  <!-- 编辑资源 -->
+  <div class="modal-backdrop hidden" id="modal-edit">
+    <div class="modal">
+      <div class="modal-head"><h3>编辑资源</h3><button class="close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <div class="field"><label>资源名称 *</label><input id="edit-title"></div>
+        <div class="field"><label>简介</label><textarea id="edit-desc" rows="4"></textarea></div>
+        <div class="field"><label>替换文件（可选）</label><input type="file" id="edit-file"></div>
+        <div class="form-error" id="edit-error"></div>
+        <button class="btn btn-primary btn-block" id="btn-edit-submit">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用户管理（管理员） -->
+  <div class="modal-backdrop hidden" id="modal-users">
+    <div class="modal modal-lg">
+      <div class="modal-head"><h3>用户管理</h3><button class="close" data-close>&times;</button></div>
+      <div class="modal-body">
+        <input type="search" id="users-search" placeholder="搜索用户名…" class="users-search">
+        <table class="users-table">
+          <thead>
+            <tr><th>ID</th><th>用户名</th><th>角色</th><th>注册时间</th><th>资源数</th><th>操作</th></tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

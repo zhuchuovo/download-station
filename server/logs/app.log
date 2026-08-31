@@ -1,0 +1,41 @@
+
+[panel] 2026/8/25 16:55:26 启动应用
+数据库初始化失败: error: 必须是表 resources 的属主
+    at D:\code\download\download-station\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async initDb (file:///D:/code/download/download-station/db.js:47:3) {
+  length: 93,
+  severity: '错误',
+  code: '42501',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'aclchk.c',
+  line: '2933',
+  routine: 'aclcheck_error'
+}
+[panel] 应用进程退出 code=1
+
+[panel] 2026/8/25 16:58:03 启动应用
+下载站已启动: http://localhost:3000
+资源存放目录: D:\code\download\download-station\uploads
+[panel] 2026/8/25 16:58:54 停止应用 (PID 9304)
+[panel] 应用进程退出 code=null
+
+[panel] 2026/8/25 16:58:54 启动应用
+下载站已启动: http://localhost:3000
+资源存放目录: D:\code\download\download-station\uploads
+[panel] 2026/8/25 16:59:22 停止应用 (PID 39724)
+[panel] 应用进程退出 code=null
+
+[panel] 2026/8/25 16:59:25 启动应用
+下载站已启动: http://localhost:3000
+资源存放目录: D:\code\download\download-station\uploads
